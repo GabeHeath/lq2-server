@@ -1,5 +1,4 @@
 import {List} from 'immutable';
-import {getRoomIndex} from './state'
 
 export function startGame(state, roomCode) {
 

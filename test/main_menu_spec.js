@@ -10,7 +10,7 @@ describe('main menu application logic', () => {
 
         it('creates a new room', () => {
             const state = Map({
-                rooms: List()
+                rooms: Map()
             });
 
             const player = Map({
@@ -18,14 +18,15 @@ describe('main menu application logic', () => {
                 name: 'Test Name'
             });
 
-            const nextState = createRoom(state, player);
+            const roomCode = createUniqueRoomCode(state.get('rooms'));
+            const nextState = createRoom(state, roomCode, player);
             expect(nextState.get('rooms').size).to.equal(1);
-            expect(nextState.get('rooms').last().get('roomCode').length).to.equal(4);
+            expect(nextState.getIn(['rooms', roomCode])).to.exist;
         });
 
         it('can handle a lot of rooms at once', () => {
             let state = Map({
-                rooms: List()
+                rooms: Map()
             });
 
             const player = Map({
@@ -33,39 +34,16 @@ describe('main menu application logic', () => {
                 name: 'Test Name'
             });
 
-            for(let i=0; i<3500; i++) {
-                state = createRoom(state, player);
+            for(let i=0; i<5000; i++) {
+                const roomCode = createUniqueRoomCode(state.get('rooms'));
+                state = createRoom(state, roomCode, player);
             }
-            expect(state.get('rooms').size).to.equal(3500);
-        });
-
-        it('has a unique room code', () => {
-            let roomCodes = [];
-            let uniqueRoomCodes = true;
-            let state = Map({
-                rooms: List()
-            });
-
-            const player = Map({
-                uuid: uuid.v1(),
-                name: 'Test Name'
-            });
-
-            for(let i=0; i<3500; i++) {
-                state = createRoom(state, player);
-                const code = createUniqueRoomCode(state.get('rooms'));
-
-                if( roomCodes.includes(code)) {
-                    uniqueRoomCodes = false;
-                }
-            }
-
-            expect(uniqueRoomCodes).to.equal(true);
+            expect(state.get('rooms').size).to.equal(5000);
         });
 
         it('adds the initial player to the lobby', () => {
             const state = Map({
-                rooms: List()
+                rooms: Map()
             });
 
             const player = Map({
@@ -73,10 +51,11 @@ describe('main menu application logic', () => {
                 name: 'Test Name'
             });
 
-            const nextState = createRoom(state, player);
-            expect(nextState.get('rooms').last().getIn(['players','allPlayers']).first().get('uuid')).to.be.a('string');
-            expect(nextState.get('rooms').last().getIn(['players','allPlayers']).first().get('name')).to.be.a('string');
-            expect(nextState.get('rooms').last().getIn(['players','allPlayers']).size).to.equal(1);
+            const roomCode = createUniqueRoomCode(state.get('rooms'));
+            const nextState = createRoom(state, roomCode, player);
+            expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers', 0, 'uuid'])).to.equal(player.get('uuid'));
+            expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers', 0, 'name'])).to.equal(player.get('name'));
+            expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers']).size).to.equal(1);
         });
 
         it('creates a socket.io room');
@@ -85,33 +64,42 @@ describe('main menu application logic', () => {
 
 
 
-    describe('joinRoom', () => {
+    describe('createUniqueRoomCode', () => {
 
-        it('finds the room matching the roomCode', () => {
-            const state = Map({
-                rooms: List()
+        it('creates a unique room code', () => {
+            let roomCodes = [];
+            let uniqueRoomCodes = true;
+            let state = Map({
+                rooms: Map()
             });
 
-            const player1 = Map({
+            const player = Map({
                 uuid: uuid.v1(),
-                name: 'Player One'
+                name: 'Test Name'
             });
 
-            const player2 = Map({
-                uuid: uuid.v1(),
-                name: 'Player Two'
-            });
+            for(let i=0; i<5000; i++) {
+                const roomCode = createUniqueRoomCode(state.get('rooms'));
+                state = createRoom(state, roomCode, player);
 
-            const nextState = createRoom(state, player1);
-            const state1RoomCode = nextState.getIn(['rooms', 0, 'roomCode']);
-            const nextState2 = joinRoom(nextState, nextState.get('rooms').first().get('roomCode'), player2);
-            const state2RoomCode = nextState2.getIn(['rooms', 0, 'roomCode']);
-            expect(state1RoomCode).to.equal(state2RoomCode);
+                if( roomCodes.includes(roomCode)) {
+                    uniqueRoomCodes = false;
+                }
+                roomCodes.push(roomCode);
+            }
+
+            expect(uniqueRoomCodes).to.equal(true);
         });
+
+    });
+
+
+
+    describe('joinRoom', () => {
 
         it('adds player to allPlayers for that room', () => {
             const state = Map({
-                rooms: List()
+                rooms: Map()
             });
 
             const player1 = Map({
@@ -124,14 +112,16 @@ describe('main menu application logic', () => {
                 name: 'Player Two'
             });
 
-            const nextState = createRoom(state, player1);
-            const nextState2 = joinRoom(nextState, nextState.get('rooms').first().get('roomCode'), player2);
-            expect(nextState2.getIn(['rooms', 0, 'players', 'allPlayers', 1, 'name'])).to.equal(player2.get('name'));
+            const roomCode = createUniqueRoomCode(state.get('rooms'));
+            const nextState = createRoom(state, roomCode, player1);
+            const nextState2 = joinRoom(nextState, roomCode, player2);
+            expect(nextState2.getIn(['rooms', roomCode, 'players', 'allPlayers']).size).to.equal(2);
+            expect(nextState2.getIn(['rooms', roomCode, 'players', 'allPlayers', 1, 'name'])).to.equal(player2.get('name'));
         });
 
         it('does nothing if the roomCode is not found', () => {
             const state = Map({
-                rooms: List()
+                rooms: Map()
             });
 
             const player1 = Map({
@@ -144,14 +134,15 @@ describe('main menu application logic', () => {
                 name: 'Player Two'
             });
 
-            const nextState = createRoom(state, player1);
+            const roomCode = createUniqueRoomCode(state.get('rooms'));
+            const nextState = createRoom(state, roomCode, player1);
             const nextState2 = joinRoom(nextState, 'ROOMCODE', player2);
             expect(nextState2).to.equal(nextState);
         });
 
         it('does nothing if uuid already exists in the room', () => {
             const state = Map({
-                rooms: List()
+                rooms: Map()
             });
 
             const player = Map({
@@ -159,8 +150,9 @@ describe('main menu application logic', () => {
                 name: 'Player One'
             });
 
-            const nextState = createRoom(state, player);
-            const nextState2 = joinRoom(nextState, nextState.get('rooms').first().get('roomCode'), player);
+            const roomCode = createUniqueRoomCode(state.get('rooms'));
+            const nextState = createRoom(state, roomCode, player);
+            const nextState2 = joinRoom(nextState, roomCode, player);
             expect(nextState2).to.equal(nextState);
         });
 
