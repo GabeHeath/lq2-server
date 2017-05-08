@@ -1,7 +1,11 @@
 import {List, Map} from 'immutable';
 
+export function destroyRoom(state, roomCode) {
+    return state.deleteIn(['rooms', roomCode]);
+}
+
 export function leaveRoom(state, roomCode, uuid) {
-    //return state.deleteIn(['rooms', roomCode, 'players', 'allPlayers', uuid])
+    return state.deleteIn(['rooms', roomCode, 'players', 'allPlayers', uuid]);
 }
 
 export function setQuestions(state, roomCode, questions) {

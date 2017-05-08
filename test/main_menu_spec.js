@@ -53,8 +53,8 @@ describe('main menu application logic', () => {
 
             const roomCode = createUniqueRoomCode(state.get('rooms'));
             const nextState = createRoom(state, roomCode, player);
-            expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers', 0, 'uuid'])).to.equal(player.get('uuid'));
-            expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers', 0, 'name'])).to.equal(player.get('name'));
+            expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers'])).to.have.key(player.get('uuid'));
+            expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers', player.get('uuid'), 'name'])).to.equal(player.get('name'));
             expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers']).size).to.equal(1);
         });
 
@@ -116,7 +116,7 @@ describe('main menu application logic', () => {
             const nextState = createRoom(state, roomCode, player1);
             const nextState2 = joinRoom(nextState, roomCode, player2);
             expect(nextState2.getIn(['rooms', roomCode, 'players', 'allPlayers']).size).to.equal(2);
-            expect(nextState2.getIn(['rooms', roomCode, 'players', 'allPlayers', 1, 'name'])).to.equal(player2.get('name'));
+            expect(nextState2.getIn(['rooms', roomCode, 'players', 'allPlayers', player2.get('uuid'), 'name'])).to.equal(player2.get('name'));
         });
 
         it('does nothing if the roomCode is not found', () => {

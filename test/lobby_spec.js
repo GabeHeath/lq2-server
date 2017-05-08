@@ -2,7 +2,7 @@ import {List, Map} from 'immutable';
 import {expect} from 'chai';
 import uuid from 'uuid';
 
-import {setQuestions, startGame} from '../src/core/lobby';
+import {destroyRoom, leaveRoom, setQuestions, startGame} from '../src/core/lobby';
 import {createRoom, createUniqueRoomCode, joinRoom} from '../src/core/main_menu'
 
 describe('lobby application logic', () => {
@@ -63,7 +63,9 @@ describe('lobby application logic', () => {
     describe('leaveRoom', () => {
 
         it('removes player from list of players in room', () => {
-
+            const nextState3 = leaveRoom(nextState2, roomCode, player2.get('uuid'));
+            expect(nextState3.getIn(['rooms', roomCode, 'players', 'allPlayers']).size).to.equal(1);
+            expect(nextState3.getIn(['rooms', roomCode, 'players', 'allPlayers'])).to.not.have.key( player2.get('uuid') );
         });
 
     });
@@ -71,12 +73,11 @@ describe('lobby application logic', () => {
 
 
     describe('destroyRoom', () => {
-
+        it('removes the room from rooms', () => {
+            const nextState3 = destroyRoom(nextState2, roomCode);
+            expect(nextState3.get('rooms').size).to.equal(0);
+            expect(nextState3.get('rooms')).to.not.have.key( roomCode );
+        });
     });
-
-
-    //
-    // - leave room
-    // -destroy room
 
 });
