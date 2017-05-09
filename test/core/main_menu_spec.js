@@ -1,8 +1,10 @@
+//TODO convert some setIns to updateIn()
+
 import {Map} from 'immutable';
 import {expect} from 'chai';
 import uuid from 'uuid';
 
-import {createRoom, createUniqueRoomCode, joinRoom, setQuestions} from '../../src/core/main_menu';
+import {createRoom, createUniqueRoomCode, joinRoom, setQuestions} from '../../dev/core/main_menu';
 
 describe('main menu application logic', () => {
 
@@ -21,7 +23,7 @@ describe('main menu application logic', () => {
             const roomCode = createUniqueRoomCode(state.get('rooms'));
             const nextState = createRoom(state, roomCode, player);
             expect(nextState.get('rooms').size).to.equal(1);
-            expect(nextState.getIn(['rooms', roomCode])).to.exist;
+            expect(nextState.get('rooms')).to.have.key(roomCode);
         });
 
         it('can handle a lot of rooms at once', () => {

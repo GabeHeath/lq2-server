@@ -1,9 +1,11 @@
+//TODO convert some setIns to updateIn()
+
 import {List, Map} from 'immutable';
 import {expect} from 'chai';
 import uuid from 'uuid';
 
-import {destroyRoom, leaveRoom, setQuestions, startGame} from '../../src/core/lobby';
-import {createRoom, createUniqueRoomCode, joinRoom} from '../../src/core/main_menu'
+import {destroyRoom, leaveRoom, setQuestions, startGame} from '../../dev/core/lobby';
+import {createRoom, createUniqueRoomCode, joinRoom} from '../../dev/core/main_menu'
 
 describe('lobby application logic', () => {
 

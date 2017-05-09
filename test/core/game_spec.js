@@ -1,10 +1,12 @@
+//TODO convert some setIns to updateIn()
+
 import {List, Map} from 'immutable';
 import {expect} from 'chai';
 import uuid from 'uuid';
 
-import {createRoom, createUniqueRoomCode, joinRoom} from '../../src/core/main_menu'
-import {startGame} from '../../src/core/lobby'
-import {increaseScore, nextPlayer, selectQuestion, spliceQuestions, submitResponse} from '../../src/core/game'
+import {createRoom, createUniqueRoomCode, joinRoom} from '../../dev/core/main_menu'
+import {startGame} from '../../dev/core/lobby'
+import {increaseScore, nextPlayer, selectQuestion, spliceQuestions, submitResponse} from '../../dev/core/game'
 
 describe('game application logic', () => {
 
@@ -134,6 +136,14 @@ describe('game application logic', () => {
     describe('increaseLikes', () => {
 
         it('increases the likes for a player');
+
+    });
+
+
+
+    describe('submitGuesses', () => {
+
+        it('calculates the number of correct guesses');
 
     });
 
