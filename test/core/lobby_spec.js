@@ -68,6 +68,12 @@ describe('lobby application logic', () => {
             expect(nextState3.getIn(['rooms', roomCode, 'players', 'allPlayers'])).to.not.have.key( player2.get('uuid') );
         });
 
+        it('destroys the room if all players leave', () => {
+            const nextState3 = leaveRoom(nextState2, roomCode, player2.get('uuid'));
+            const nextState4 = leaveRoom(nextState3, roomCode, player1.get('uuid'));
+            expect(nextState4.get('rooms').size).to.equal(0);
+        });
+
     });
 
 

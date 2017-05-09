@@ -5,13 +5,14 @@ export function destroyRoom(state, roomCode) {
 }
 
 export function leaveRoom(state, roomCode, uuid) {
-    return state.deleteIn(['rooms', roomCode, 'players', 'allPlayers', uuid]);
+    const newState =  state.deleteIn(['rooms', roomCode, 'players', 'allPlayers', uuid]);
+    return newState.getIn(['rooms', roomCode, 'players', 'allPlayers']).size === 0 ? destroyRoom(newState, roomCode) : newState;
 }
 
 export function setQuestions(state, roomCode, questions) {
     return state.setIn(['rooms', roomCode, 'questions'], Map({
-        currentQuestion: null,
-        questionBank: questions
+        activeQuestions: List(),
+        questionBank: questions.sortBy(Math.random)
     }));
 }
 
