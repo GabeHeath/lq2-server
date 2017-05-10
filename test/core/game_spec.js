@@ -4,9 +4,9 @@ import {List, Map} from 'immutable';
 import {expect} from 'chai';
 import uuid from 'uuid';
 
-import {createRoom, createUniqueRoomCode, joinRoom} from '../../dev/core/main_menu'
-import {startGame} from '../../dev/core/lobby'
-import {increaseScore, nextPlayer, selectQuestion, spliceQuestions, submitResponse} from '../../dev/core/game'
+import {createRoom, createUniqueRoomCode, joinRoom} from '../../src/core/main_menu'
+import {startGame} from '../../src/core/lobby'
+import {increaseScore, nextPlayer, selectQuestion, spliceQuestions, submitResponse} from '../../src/core/game'
 
 describe('game application logic', () => {
 
@@ -43,24 +43,23 @@ describe('game application logic', () => {
 
         const nextState3 = joinRoom(nextState2, roomCode, player3);
         const nextState4 = startGame(nextState3, roomCode, questions);
-        const nextState5 = spliceQuestions(nextState4, roomCode);
 
         it('picks 3 random questions from the questionBank', () => {
-            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).size).to.equal(3);
-            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank']).size).to.equal(5);
+            expect(nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).size).to.equal(3);
+            expect(nextState4.getIn(['rooms', roomCode, 'questions', 'questionBank']).size).to.equal(5);
         });
 
         it('does not share any questions between activeQuestions and questionBank lists', () => {
-            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include( nextState5.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).get(0) );
-            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include( nextState5.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).get(1) );
-            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include( nextState5.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).get(2) );
+            expect(nextState4.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include( nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).get(0) );
+            expect(nextState4.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include( nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).get(1) );
+            expect(nextState4.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include( nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).get(2) );
         });
 
         it('when less than 3 questions left, picks all that are left', () => {
+            const nextState5 = spliceQuestions(nextState4, roomCode);
             const nextState6 = spliceQuestions(nextState5, roomCode);
-            const nextState7 = spliceQuestions(nextState6, roomCode);
-            expect(nextState7.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).size).to.equal(2);
-            expect(nextState7.getIn(['rooms', roomCode, 'questions', 'questionBank']).size).to.equal(0);
+            expect(nextState6.getIn(['rooms', roomCode, 'questions', 'activeQuestions']).size).to.equal(2);
+            expect(nextState6.getIn(['rooms', roomCode, 'questions', 'questionBank']).size).to.equal(0);
         });
 
     });
@@ -104,17 +103,26 @@ describe('game application logic', () => {
 
 
 
-    describe('changePlayer', () => {
+    describe('nextPlayer', () => {
+
+        const nextState3 = joinRoom(nextState2, roomCode, player3);
+        const nextState4 = startGame(nextState3, roomCode, questions);
+        const nextState5 = nextPlayer(nextState4, roomCode);
 
         it('changes the current player to the next one in line', () => {
-            const nextState3 = nextPlayer(nextState2, roomCode);
-            expect(nextState3.getIn(['rooms', roomCode, 'players', 'currentPlayer'])).to.equal(2);
+            expect(nextState5.getIn(['rooms', roomCode, 'players', 'currentPlayer'])).to.equal(2);
         });
 
         it('wraps back to the first player if current player is the last in line', () => {
-            const nextState3 = nextPlayer(nextState2, roomCode);
-            const nextState4 = nextPlayer(nextState3, roomCode);
-            expect(nextState4.getIn(['rooms', roomCode, 'players', 'currentPlayer'])).to.equal(1);
+            const nextState6 = nextPlayer(nextState5, roomCode);
+            const nextState7 = nextPlayer(nextState6, roomCode);
+            expect(nextState7.getIn(['rooms', roomCode, 'players', 'currentPlayer'])).to.equal(1);
+        });
+
+        it('sets 3 new questions to activeQuestions', () => {
+            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include(nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions', 0]));
+            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include(nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions', 1]));
+            expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include(nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions', 2]));
         });
 
     });

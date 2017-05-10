@@ -4,7 +4,7 @@ import {Map} from 'immutable';
 import {expect} from 'chai';
 import uuid from 'uuid';
 
-import {createRoom, createUniqueRoomCode, joinRoom, setQuestions} from '../../dev/core/main_menu';
+import {createRoom, createUniqueRoomCode, joinRoom, setQuestions} from '../../src/core/main_menu';
 
 describe('main menu application logic', () => {
 

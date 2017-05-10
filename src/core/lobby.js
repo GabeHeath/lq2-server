@@ -1,4 +1,7 @@
+//TODO change getIns to updateIn()
+
 import {List, Map} from 'immutable';
+import {spliceQuestions} from './game'
 
 export function destroyRoom(state, roomCode) {
     return state.deleteIn(['rooms', roomCode]);
@@ -19,7 +22,8 @@ export function setQuestions(state, roomCode, questions) {
 export function startGame(state, roomCode, questions) {
     if( state.getIn(['rooms', roomCode, 'players', 'allPlayers']).size > 2 ) {
         const newState = state.setIn(['rooms', roomCode, 'gameInProgress'], true);
-        return setQuestions(newState, roomCode, questions);
+        const setQuestionsState = setQuestions(newState, roomCode, questions);
+        return spliceQuestions(setQuestionsState, roomCode);
     }
     return state;
 }

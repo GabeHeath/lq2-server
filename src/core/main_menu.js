@@ -1,3 +1,5 @@
+//TODO change getIns to updateIn()
+
 import {Map} from 'immutable';
 
 export function createRoom(state, roomCode, player) {

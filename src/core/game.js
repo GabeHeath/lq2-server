@@ -1,3 +1,5 @@
+//TODO change getIns to updateIn()
+
 import {List} from 'immutable'
 
 export function increaseScore(state, roomCode, player) {
@@ -6,7 +8,9 @@ export function increaseScore(state, roomCode, player) {
 
 export function nextPlayer(state, roomCode) {
     const players = state.getIn(['rooms', roomCode, 'players']);
-    return state.setIn(['rooms', roomCode, 'players', 'currentPlayer'], (players.get('currentPlayer') % players.get('allPlayers').size) + 1 );
+    const nextPlayerState = state.setIn(['rooms', roomCode, 'players', 'currentPlayer'], (players.get('currentPlayer') % players.get('allPlayers').size) + 1 );
+    const a =  spliceQuestions(nextPlayerState, roomCode);
+    return a;
 }
 
 export function selectQuestion(state, roomCode, questionIndex) {

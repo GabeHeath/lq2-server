@@ -4,8 +4,8 @@ import {List, Map} from 'immutable';
 import {expect} from 'chai';
 import uuid from 'uuid';
 
-import {destroyRoom, leaveRoom, setQuestions, startGame} from '../../dev/core/lobby';
-import {createRoom, createUniqueRoomCode, joinRoom} from '../../dev/core/main_menu'
+import {destroyRoom, leaveRoom, setQuestions, startGame} from '../../src/core/lobby';
+import {createRoom, createUniqueRoomCode, joinRoom} from '../../src/core/main_menu'
 
 describe('lobby application logic', () => {
 
@@ -28,7 +28,7 @@ describe('lobby application logic', () => {
         name: 'Player 3'
     });
 
-    const questions = List.of('Question 1', 'Question 2');
+    const questions = List.of('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8');
 
     const roomCode = createUniqueRoomCode(state.get('rooms'));
     const nextState = createRoom(state, roomCode, player1);
@@ -55,7 +55,7 @@ describe('lobby application logic', () => {
         it('adds the questions to the state', () => {
             const nextState3 = joinRoom(nextState2, roomCode, player3);
             const nextState4 = startGame(nextState3, roomCode, questions);
-            expect(nextState4.getIn(['rooms', roomCode, 'questions', 'questionBank']).size).to.equal(2);
+            expect(nextState4.getIn(['rooms', roomCode, 'questions', 'questionBank']).size).to.equal(5);
         });
 
     });
@@ -75,6 +75,8 @@ describe('lobby application logic', () => {
             const nextState4 = leaveRoom(nextState3, roomCode, player1.get('uuid'));
             expect(nextState4.get('rooms').size).to.equal(0);
         });
+
+        it('ends the game if less than 3 players remain');
 
     });
 
