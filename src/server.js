@@ -9,7 +9,15 @@ export default function startServer(store) {
     );
 
     io.on('connection', (socket) => {
+        console.log('player connected');
         socket.emit('state', store.getState().toJS());
         socket.on('action', store.dispatch.bind(store));
+        socket.on('roomCode', (roomCode) => {
+            console.log('in room');
+            socket.join(roomCode);
+            // everyone except sender - socket.broadcast.to(roomCode).emit('code',
+            io.to(roomCode).emit('code',
+                roomCode)
+        });
     });
 }
