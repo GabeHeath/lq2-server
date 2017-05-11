@@ -1,6 +1,6 @@
 //TODO change getIns to updateIn()
 
-import {Map} from 'immutable';
+import {fromJS, Map} from 'immutable';
 
 export function createRoom(state, roomCode, player) {
     const newRoom = state.setIn(['rooms', roomCode], Map({
@@ -11,8 +11,8 @@ export function createRoom(state, roomCode, player) {
         })
     }));
 
-    return newRoom.setIn(['rooms', roomCode, 'players', 'allPlayers', player.get('uuid')],  Map({
-        name: player.get('name'),
+    return newRoom.setIn(['rooms', roomCode, 'players', 'allPlayers', fromJS(player).get('uuid')],  Map({
+        name: fromJS(player).get('name'),
         lastResponse: null,
         score: 0,
         likes: 0

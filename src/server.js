@@ -5,7 +5,9 @@ export default function startServer(store) {
 
     //TODO create a socket io room and only send the state of the room
     store.subscribe(
-        () => io.emit('state', store.getState().toJS())
+        () => {
+            io.emit('state', store.getState().toJS());
+        }
     );
 
     io.on('connection', (socket) => {
