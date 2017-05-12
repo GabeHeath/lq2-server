@@ -21,11 +21,11 @@ export function createRoom(state, roomCode, player) {
 
 export function joinRoom(state, roomCode, player) {
     const room = state.getIn(['rooms', roomCode]);
-    const uuid = state.getIn(['rooms', roomCode, 'players', 'allPlayers', player.get('uuid')]);
+    const uuid = state.getIn(['rooms', roomCode, 'players', 'allPlayers', fromJS(player).get('uuid')]);
 
     if( room && !uuid ) {
-        return state.setIn(['rooms', roomCode, 'players', 'allPlayers', player.get('uuid')], Map({
-            name: player.get('name'),
+        return state.setIn(['rooms', roomCode, 'players', 'allPlayers', fromJS(player).get('uuid')], Map({
+            name: fromJS(player).get('name'),
             lastResponse: null,
             score: 0,
             likes: 0
