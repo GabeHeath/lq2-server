@@ -1,6 +1,6 @@
 //TODO change getIns to updateIn()
 
-import {List} from 'immutable'
+import {fromJS, List} from 'immutable'
 
 export function increaseScore(state, roomCode, player) {
     return state.setIn(['rooms', roomCode, 'players','allPlayers', player.get('uuid'), 'score'], parseInt(state.getIn(['rooms', roomCode, 'players', 'allPlayers', player.get('uuid'), 'score'])) + player.get('score'));
@@ -28,5 +28,5 @@ export function spliceQuestions(state, roomCode) {
 }
 
 export function submitResponse(state, roomCode, player) {
-    return state.setIn(['rooms', roomCode, 'players', 'allPlayers', player.get('uuid'), 'lastResponse'], player.get('response'));
+    return state.setIn(['rooms', roomCode, 'players', 'allPlayers', fromJS(player).get('uuid'), 'lastResponse'], fromJS(player).get('response'));
 }
