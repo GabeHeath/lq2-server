@@ -60,8 +60,6 @@ describe('main menu application logic', () => {
             expect(nextState.getIn(['rooms', roomCode, 'players','allPlayers']).size).to.equal(1);
         });
 
-        it('creates a socket.io room');
-
     });
 
 
@@ -158,7 +156,7 @@ describe('main menu application logic', () => {
             expect(nextState2).to.equal(nextState);
         });
 
-        it('joins the socket.io room');
+        it('does nothing if name already exists in the room');
 
     });
 
