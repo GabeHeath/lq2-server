@@ -9,8 +9,8 @@ export function increaseScore(state, roomCode, player) {
 export function nextPlayer(state, roomCode) {
     const players = state.getIn(['rooms', roomCode, 'players']);
     const nextPlayerState = state.setIn(['rooms', roomCode, 'players', 'currentPlayer'], (players.get('currentPlayer') % players.get('allPlayers').size) + 1 );
-    const a =  spliceQuestions(nextPlayerState, roomCode);
-    return a;
+    const splicedQuestionState = spliceQuestions(nextPlayerState, roomCode);
+    return splicedQuestionState.deleteIn(['rooms', roomCode, 'guesses']);
 }
 
 export function selectQuestion(state, roomCode, questionIndex) {
@@ -25,6 +25,11 @@ export function spliceQuestions(state, roomCode) {
     const splicedQuestionBank = questionBank.splice(0, 3);
     const setActiveQuestions = state.setIn(['rooms', roomCode, 'questions', 'activeQuestions'], activeQuestions);
     return setActiveQuestions.setIn(['rooms', roomCode, 'questions', 'questionBank'], splicedQuestionBank);
+}
+
+export function submitGuesses(state, roomCode, currentPlayerUUID, guesses) {
+    const updatedScoreState = state.updateIn(['rooms', roomCode, 'players', 'allPlayers', currentPlayerUUID, 'score'], score => score + fromJS(guesses).get('score'));
+    return updatedScoreState.setIn(['rooms', roomCode, 'guesses'], guesses);
 }
 
 export function submitResponse(state, roomCode, player) {

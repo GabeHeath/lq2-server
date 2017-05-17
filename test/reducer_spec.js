@@ -136,6 +136,25 @@ describe('main menu reducer', () => {
         expect(selectQuestionState.getIn(['rooms', 'ZZZZ', 'questions', 'questionBank']).size).to.equal(7);
     });
 
+    it('handles SUBMIT_GUESSES', () => {
+        const guesses = Map({
+            score: 1,
+            [`${player2.get('uuid')}`]: true,
+            [`${player3.get('uuid')}`]: false
+        });
+        const submitGuessesAction = {type: 'SUBMIT_GUESSES', roomCode: roomCode, currentPlayerUUID: player4.get('uuid'), guesses};
+        const submitGuessesState = reducer(player4JoinRoomState, submitGuessesAction);
+        expect(submitGuessesState.get('rooms')).to.have.key('ZZZZ');
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'gameInProgress'])).to.equal(true);
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'players', 'currentPlayer'])).to.equal(1);
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'players', 'allPlayers']).size).to.equal(4);
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'questions', 'activeQuestions']).size).to.equal(3);
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'questions', 'questionBank']).size).to.equal(5);
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'guesses']).size).to.equal(3);
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'guesses', player2.get('uuid')])).to.equal(true);
+        expect(submitGuessesState.getIn(['rooms', 'ZZZZ', 'guesses', player3.get('uuid')])).to.equal(false);
+    });
+
     it('handles SUBMIT_RESPONSE', () => {
         const submitResponseAction = {type: 'SUBMIT_RESPONSE', roomCode: roomCode, player: player4};
         const submitResponseState = reducer(player4JoinRoomState, submitResponseAction);
@@ -149,8 +168,6 @@ describe('main menu reducer', () => {
     });
 
     it('handles SUBMIT_LIKE');
-
-    it('handles SUBMIT_GUESS');
 
 
 

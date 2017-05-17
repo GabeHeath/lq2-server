@@ -1,7 +1,7 @@
 import {INITIAL_STATE} from './core/state'
 import {createRoom, joinRoom} from './core/main_menu';
 import {leaveRoom, startGame} from './core/lobby';
-import {nextPlayer, selectQuestion, submitResponse} from './core/game';
+import {nextPlayer, selectQuestion, submitGuesses, submitResponse} from './core/game';
 import {allQuestions} from '../allQuestions';
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -24,6 +24,9 @@ export default function reducer(state = INITIAL_STATE, action) {
             break;
         case 'START_GAME':
             return startGame(state, action.roomCode, allQuestions);
+            break;
+        case 'SUBMIT_GUESSES':
+            return submitGuesses(state, action.roomCode, action.currentPlayerUUID, action.guesses);
             break;
         case 'SUBMIT_RESPONSE':
             return submitResponse(state, action.roomCode, action.player);

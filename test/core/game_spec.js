@@ -6,7 +6,7 @@ import uuid from 'uuid';
 
 import {createRoom, createUniqueRoomCode, joinRoom} from '../../src/core/main_menu'
 import {startGame} from '../../src/core/lobby'
-import {increaseScore, nextPlayer, selectQuestion, spliceQuestions, submitResponse} from '../../src/core/game'
+import {increaseScore, nextPlayer, selectQuestion, spliceQuestions, submitGuesses, submitResponse} from '../../src/core/game'
 
 describe('game application logic', () => {
 
@@ -107,22 +107,36 @@ describe('game application logic', () => {
 
         const nextState3 = joinRoom(nextState2, roomCode, player3);
         const nextState4 = startGame(nextState3, roomCode, questions);
-        const nextState5 = nextPlayer(nextState4, roomCode);
 
         it('changes the current player to the next one in line', () => {
+            const nextState5 = nextPlayer(nextState4, roomCode);
             expect(nextState5.getIn(['rooms', roomCode, 'players', 'currentPlayer'])).to.equal(2);
         });
 
         it('wraps back to the first player if current player is the last in line', () => {
+            const nextState5 = nextPlayer(nextState4, roomCode);
             const nextState6 = nextPlayer(nextState5, roomCode);
             const nextState7 = nextPlayer(nextState6, roomCode);
             expect(nextState7.getIn(['rooms', roomCode, 'players', 'currentPlayer'])).to.equal(1);
         });
 
         it('sets 3 new questions to activeQuestions', () => {
+            const nextState5 = nextPlayer(nextState4, roomCode);
             expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include(nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions', 0]));
             expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include(nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions', 1]));
             expect(nextState5.getIn(['rooms', roomCode, 'questions', 'questionBank'])).to.not.include(nextState4.getIn(['rooms', roomCode, 'questions', 'activeQuestions', 2]));
+        });
+
+        it('removes the guesses key', () => {
+            const guesses = Map({
+                score: 1,
+                [`${player2.get('uuid')}`]: true,
+                [`${player3.get('uuid')}`]: false
+            });
+            const nextState5 = submitGuesses(nextState4, roomCode, player1.get('uuid'), guesses);
+            expect(nextState5.getIn(['rooms', roomCode])).contains.key('guesses');
+            const nextState6 = nextPlayer(nextState5, roomCode);
+            expect(nextState6.getIn(['rooms', roomCode])).to.not.have.key('guesses');
         });
 
     });
@@ -150,8 +164,30 @@ describe('game application logic', () => {
 
 
     describe('submitGuesses', () => {
+        const nextState3 = joinRoom(nextState2, roomCode, player3);
+        const nextState4 = startGame(nextState3, roomCode, questions);
 
-        it('calculates the number of correct guesses');
+        it('adds the guesses to state', () => {
+            const guesses = Map({
+                score: 1,
+                [`${player2.get('uuid')}`]: true,
+                [`${player3.get('uuid')}`]: false
+            });
+            const nextState5 = submitGuesses(nextState4, roomCode, player1.get('uuid'), guesses);
+            expect(nextState5.getIn(['rooms', roomCode, 'guesses']).size).to.equal(3);
+            expect(nextState5.getIn(['rooms', roomCode, 'guesses', player2.get('uuid')])).to.equal(true);
+            expect(nextState5.getIn(['rooms', roomCode, 'guesses', player3.get('uuid')])).to.equal(false);
+        });
+
+        it('increases the score for the number of correct responses', () => {
+            const guesses = Map({
+                score: 1,
+                [`${player2.get('uuid')}`]: true,
+                [`${player3.get('uuid')}`]: false
+            });
+            const nextState5 = submitGuesses(nextState4, roomCode, player1.get('uuid'), guesses);
+            expect(nextState5.getIn(['rooms', roomCode, 'players', 'allPlayers', player1.get('uuid'), 'score'])).to.equal(1);
+        });
 
     });
 
