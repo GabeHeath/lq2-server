@@ -139,6 +139,11 @@ describe('game application logic', () => {
             expect(nextState6.getIn(['rooms', roomCode])).to.not.have.key('guesses');
         });
 
+        it('removes the lastResponse for each player', () => {
+            const nextState5 = nextPlayer(nextState4, roomCode);
+            expect(nextState5.getIn(['rooms', roomCode, 'players', 'allPlayers', player1.get('uuid'), 'lastResponse'])).to.equal(null);
+        });
+
     });
 
 

@@ -10,7 +10,12 @@ export function nextPlayer(state, roomCode) {
     const players = state.getIn(['rooms', roomCode, 'players']);
     const nextPlayerState = state.setIn(['rooms', roomCode, 'players', 'currentPlayer'], (players.get('currentPlayer') % players.get('allPlayers').size) + 1 );
     const splicedQuestionState = spliceQuestions(nextPlayerState, roomCode);
-    return splicedQuestionState.deleteIn(['rooms', roomCode, 'guesses']);
+    const deletedGuessesState = splicedQuestionState.deleteIn(['rooms', roomCode, 'guesses']);
+    let  deletedResponsesState = deletedGuessesState;
+    deletedGuessesState.getIn(['rooms', roomCode, 'players', 'allPlayers']).keySeq().forEach( uuid => {
+        deletedResponsesState = deletedResponsesState.setIn(['rooms', roomCode, 'players', 'allPlayers', uuid, 'lastResponse'], null);
+    });
+    return deletedResponsesState;
 }
 
 export function selectQuestion(state, roomCode, questionIndex) {
