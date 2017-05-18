@@ -78,6 +78,8 @@ describe('lobby application logic', () => {
 
         it('ends the game if less than 3 players remain');
 
+        it('transfers to next player if currentPlayer leaves');
+
     });
 
 

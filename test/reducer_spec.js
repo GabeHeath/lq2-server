@@ -104,7 +104,7 @@ describe('main menu reducer', () => {
     });
 
     it('handles LEAVE_ROOM', () => {
-        const player4LeaveRoomAction = {type: 'LEAVE_ROOM', roomCode: roomCode, player: player4};
+        const player4LeaveRoomAction = {type: 'LEAVE_ROOM', roomCode: roomCode, uuid: player4.get('uuid')};
         const player4LeaveRoomState = reducer(player4JoinRoomState, player4LeaveRoomAction);
         expect(player4LeaveRoomState.get('rooms')).to.have.key('ZZZZ');
         expect(player4LeaveRoomState.getIn(['rooms', 'ZZZZ', 'gameInProgress'])).to.equal(true);

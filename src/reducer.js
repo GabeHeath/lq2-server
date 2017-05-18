@@ -14,7 +14,7 @@ export default function reducer(state = INITIAL_STATE, action) {
             return joinRoom(state, action.roomCode, action.player);
             break;
         case 'LEAVE_ROOM':
-            return leaveRoom(state, action.roomCode, action.player.get('uuid'));
+            return leaveRoom(state, action.roomCode, action.uuid);
             break;
         case 'NEXT_PLAYER':
             return nextPlayer(state, action.roomCode);
