@@ -58,6 +58,7 @@ describe('main menu reducer', () => {
                                 name: 'Player 1',
                                 lastResponse: null,
                                 score: 0,
+                                lastResponseLikes: 0,
                                 likes: 0
                             }
                         }
@@ -79,12 +80,14 @@ describe('main menu reducer', () => {
                                 name: 'Player 1',
                                 lastResponse: null,
                                 score: 0,
+                                lastResponseLikes: 0,
                                 likes: 0
                             },
                             'player-2s-uuid': {
                                 name: 'Player 2',
                                 lastResponse: null,
                                 score: 0,
+                                lastResponseLikes: 0,
                                 likes: 0
                             }
                         }

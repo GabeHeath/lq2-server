@@ -33,6 +33,7 @@ describe('store', () => {
                                 name: 'Player 1',
                                 lastResponse: null,
                                 score: 0,
+                                lastResponseLikes: 0,
                                 likes: 0
                             }
                         }
