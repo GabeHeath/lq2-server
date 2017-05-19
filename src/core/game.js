@@ -14,6 +14,7 @@ export function nextPlayer(state, roomCode) {
     let  deletedResponsesState = deletedGuessesState;
     deletedGuessesState.getIn(['rooms', roomCode, 'players', 'allPlayers']).keySeq().forEach( uuid => {
         deletedResponsesState = deletedResponsesState.setIn(['rooms', roomCode, 'players', 'allPlayers', uuid, 'lastResponse'], null);
+        deletedResponsesState = deletedResponsesState.setIn(['rooms', roomCode, 'players', 'allPlayers', uuid, 'lastResponseLikes'], 0);
     });
     return deletedResponsesState;
 }
@@ -35,6 +36,11 @@ export function spliceQuestions(state, roomCode) {
 export function submitGuesses(state, roomCode, currentPlayerUUID, guesses) {
     const updatedScoreState = state.updateIn(['rooms', roomCode, 'players', 'allPlayers', currentPlayerUUID, 'score'], score => score + fromJS(guesses).get('score'));
     return updatedScoreState.setIn(['rooms', roomCode, 'guesses'], guesses);
+}
+
+export function submitLike(state, roomCode, uuid) {
+    const updatedResponseLikesState = state.updateIn(['rooms', roomCode, 'players', 'allPlayers', uuid, 'lastResponseLikes'], val => val + 1);
+    return updatedResponseLikesState.updateIn(['rooms', roomCode, 'players', 'allPlayers', uuid, 'likes'], val => val + 1);
 }
 
 export function submitResponse(state, roomCode, player) {

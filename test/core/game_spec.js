@@ -144,6 +144,8 @@ describe('game application logic', () => {
             expect(nextState5.getIn(['rooms', roomCode, 'players', 'allPlayers', player1.get('uuid'), 'lastResponse'])).to.equal(null);
         });
 
+        it('clears the lastResponsLikes for each player');
+
     });
 
 
@@ -163,6 +165,8 @@ describe('game application logic', () => {
     describe('increaseLikes', () => {
 
         it('increases the likes for a player');
+
+        it('increases the lastResponseLikes for a player');
 
     });
 

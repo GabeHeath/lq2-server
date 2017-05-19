@@ -15,6 +15,7 @@ export function createRoom(state, roomCode, player) {
         name: fromJS(player).get('name'),
         lastResponse: null,
         score: 0,
+        lastResponseLikes: 0,
         likes: 0
     }))
 }
@@ -28,6 +29,7 @@ export function joinRoom(state, roomCode, player) {
             name: fromJS(player).get('name'),
             lastResponse: null,
             score: 0,
+            lastResponseLikes: 0,
             likes: 0
         }));
     }
